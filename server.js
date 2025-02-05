@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { text } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import env from 'dotenv';
@@ -62,10 +62,16 @@ app.post("/books", async (req, res) => {
 
 // 📌 Update a book
 app.put("/books/:id", async (req, res) => {
+    const {title,author,year}=req.body;
+    const updatedBook= {
+        title:title,
+        author:author,
+        year:year
+    }
     try {
         await collection.findOneAndUpdate(
             { _id: new mongoose.Types.ObjectId(req.params.id) },
-            { $set: req.body },
+            { $set: updatedBook },
             { returnDocument: "after" }
         );
         res.send("book updated succefully");
