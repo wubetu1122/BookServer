@@ -14,79 +14,79 @@ connectDB();
 
 // 📌 Directly Access the MongoDB Collection (No Schema)
 const db = mongoose.connection;
-const collection = db.collection("books");
+const collection = db.collection("students");
 
 // 📌 API Documentation
 app.get("/", (req, res) => {
     res.json({
-        message: "📚 Welcome to the Books API!",
+        message: "📚 Welcome to the students API!",
         endpoints: {
-            getAllBooks: { method: "GET", url: "/books" },
-            getBookById: { method: "GET", url: "/books/:id" },
-            createBook: { method: "POST", url: "/books", body: { title: "string", author: "string", year: "number" } },
-            updateBook: { method: "PUT", url: "/books/:id", body: { title: "string", author: "string", year: "number" } },
-            deleteBook: { method: "DELETE", url: "/books/:id" },
+            getAllstudents: { method: "GET", url: "/students" },
+            getsudentById: { method: "GET", url: "/students/:id" },
+            createstudent: { method: "POST", url: "/students", body: { Name: "string", Age: "number", Grade: "number" } },
+            updatestudent: { method: "PUT", url: "/students/:id", body: { Name: "string", Age: "number", Grade: "number" } },
+            deletestudent: { method: "DELETE", url: "/students/:id" },
         },
     });
 });
 
-// 📌 Get all books
-app.get("/books", async (req, res) => {
+// 📌 Get all students
+app.get("/students", async (req, res) => {
     try {
-        const books = await collection.find({}).toArray();
-        res.json(books);
+        const students = await collection.find({}).toArray();
+        res.json(students);
     } catch (err) {
-        res.status(500).json({ message: "Error fetching books", error: err });
+        res.status(500).json({ message: "Error fetching students", error: err });
     }
 });
 
-// 📌 Get a single book by ID
-app.get("/books/:id", async (req, res) => {
+// 📌 Get a single sudent by ID
+app.get("/students/:id", async (req, res) => {
     try {
-        const book = await collection.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) });
-        book ? res.json(book) : res.status(404).json({ message: "Book not found" });
+        const student = await collection.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) });
+        student ? res.json(student) : res.status(404).json({ message: "student not found" });
     } catch (err) {
-        res.status(500).json({ message: "Error fetching book", error: err });
+        res.status(500).json({ message: "Error fetching student", error: err });
     }
 });
 
-// 📌 Add a new book
-app.post("/books", async (req, res) => {
+// 📌 Add a new student
+app.post("/students", async (req, res) => {
     try {
         await collection.insertOne(req.body);
-        res.status(201).send("book created successfully");
+        res.status(201).send("student Added successfully");
     } catch (err) {
-        res.status(500).json({ message: "Error creating book", error: err });
+        res.status(500).json({ message: "Error Adding student", error: err });
     }
 });
 
-// 📌 Update a book
-app.put("/books/:id", async (req, res) => {
-    const {title,author,year}=req.body;
-    const updatedBook= {
-        title:title,
-        author:author,
-        year:year
+// 📌 Update a student
+app.put("/students/:id", async (req, res) => {
+    const {Name,Age,Grade}=req.body;
+    const updatedstudent= {
+        Name:Name,
+        Age:Age,
+        Grade:Grade,
     }
     try {
         await collection.findOneAndUpdate(
             { _id: new mongoose.Types.ObjectId(req.params.id) },
-            { $set: updatedBook },
+            { $set: updatedstudent },
             { returnDocument: "after" }
         );
-        res.send("book updated succefully");
+        res.send("student updated succefully");
     } catch (err) {
-        res.status(500).json({ message: "Error updating book", error: err });
+        res.status(500).json({ message: "Error updating student", error: err });
     }
 });
 
-// 📌 Delete a book
-app.delete("/books/:id", async (req, res) => {
+// 📌 Delete a student
+app.delete("/students/:id", async (req, res) => {
     try {
         const result = await collection.deleteOne({ _id: new mongoose.Types.ObjectId(req.params.id) });
-        result.deletedCount ? res.json({ message: "Book deleted" }) : res.status(404).json({ message: "Book not found" });
+        result.deletedCount ? res.json({ message: "student deleted" }) : res.status(404).json({ message: "student not found" });
     } catch (err) {
-        res.status(500).json({ message: "Error deleting book", error: err });
+        res.status(500).json({ message: "Error deleting student", error: err });
     }
 });
 
